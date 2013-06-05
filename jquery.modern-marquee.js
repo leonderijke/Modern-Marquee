@@ -77,7 +77,11 @@
 			this.marquee.css( 'margin-left', initialState );
 		}
 
-		this._run( initialState, endState, iterationCount );
+		if ( this.options.start === 'auto' ) {
+			this._run( initialState, endState, iterationCount );
+		}
+
+		this._bindEventHandlers();
 	};
 
 	/*
@@ -135,6 +139,14 @@
 	};
 
 	/*
+	 * @function _refresh
+	 * Wraps the element, calculates the end state
+	 */
+	ModernMarquee.prototype._refresh = function _refresh( event ) {
+		console.log('refreshing');
+	};
+
+	/*
 	 * @function _calculateEndState
 	 * Calculates the end state for a given marquee, based on the specified mode
 	 *
@@ -150,6 +162,18 @@
 			case 'slide':
 			case 'alternate':
 				return -1 * ( marquee.outerWidth( true ) - container.width() );
+		}
+	};
+
+	/*
+	 * @function _bindEventHandlers
+	 * Binds the event handlers to the element
+	 */
+	ModernMarquee.prototype._bindEventHandlers = function _bindEventHandlers() {
+		this.el.on( 'modernMarquee.refresh', $.proxy( this._refresh, this ) );
+
+		if ( this.options.start === 'hover' ) {
+			this.el.on( 'hover', $.proxy( this._run, this ));
 		}
 	};
 
