@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			h1 {
+				width: 200px;
+				border: 1px solid salmon;
+			}
+
+			.mm-marquee {
+				padding-left: 35px;
+				padding-right: 35px;
+				background-color: lightblue;
+			}
+		</style>
+		<script src="modernizr.custom.04365.js"></script>
+	</head>
+	<body>
+
+		<h1 class="js-marquee">This is some example text. Look I'm scrolling!</h1>
+
+		<script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
+		<script src="jquery.modern-marquee.js"></script>
+		<script>
+			jQuery(function($) {
+				$('.js-marquee').modernMarquee();
+			});
+		</script>
+	</body>
+</html>
