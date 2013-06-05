@@ -17,13 +17,17 @@
 	</head>
 	<body>
 
-		<h1 class="js-marquee">This is some example text. Look I'm scrolling!</h1>
+		<h1 class="js-marquee-infinite">This is some example text. Look I'm scrolling!</h1>
+		<h1 class="js-marquee-5">This runs only 5 times. Look I'm scrolling!</h1>
 
 		<script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
 		<script src="jquery.modern-marquee.js"></script>
 		<script>
 			jQuery(function($) {
-				$('.js-marquee').modernMarquee();
+				$('.js-marquee-infinite').modernMarquee();
+				$('.js-marquee-5').modernMarquee({
+					iterationCount: 5
+				});
 			});
 		</script>
 	</body>

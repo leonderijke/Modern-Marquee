@@ -30,9 +30,16 @@
 	};
 
 	var defaults = {
-		duration:       "4s",
+		// Duration specified in milliseconds (integer)
+		duration:       4000,
+
+		// Number of times the marquee should scroll ("infinite" or integer)
 		iterationCount: "infinite",
+
+		// Mode: scroll, slide or alternate (string)
 		mode:           "scroll",
+
+		// Start: auto, manual or hover (string)
 		start:          "auto"
 	};
 
@@ -44,9 +51,14 @@
 		this.init();
 	}
 
+	/*
+	 * @function init
+	 * Wraps the element, starts the animation
+	 */
 	ModernMarquee.prototype.init = function init() {
 		var initialState,
-			endState;
+			endState,
+			iterationCount;
 
 		this.el.addClass( 'mm-marquee-container' );
 		this.marquee = this.el.contents().wrap( '<span class="mm-marquee">' ).parent();
@@ -59,55 +71,78 @@
 		initialState = '100%';
 		endState = this._calculateEndState( this.el, this.marquee );
 
+		iterationCount = this.options.iterationCount;
+
 		if ( this.options.mode === 'scroll' ) {
 			this.marquee.css( 'margin-left', initialState );
 		}
 
+		this._run( initialState, endState, iterationCount );
+	};
 
-		if (supportsTransitions) {
-			this._run( initialState, endState );
-		} else {
-			this._oldRun( initialState, endState );
+	/*
+	 * @function _run
+	 * Runs the actual scrolling animation
+	 *
+	 * @param initialState integer
+	 * @param endState integer
+	 * @param iterationCount integer or string
+	 */
+	ModernMarquee.prototype._run = function _run( initialState, endState, iterationCount ) {
+		var self = this;
+
+		if ( iterationCount === "infinite" || iterationCount !== 0 ) {
+			iterationCount = iterationCount === "infinite" ? "infinite" : iterationCount - 1;
+
+			if ( supportsTransitions) {
+
+				this.marquee.css({
+					'transition-property'        : 'margin-left',
+					'transition-duration'        : '' + this.options.duration + 'ms',
+					'transition-timing-function' : 'linear',
+					'margin-left'                : endState
+				})
+				.one( transEndEventName, function ( event ) {
+					self.marquee.css({
+						'transition-property'        : '',
+						'transition-duration'        : '',
+						'transition-timing-function' : ''
+					});
+					self.marquee.css({
+						'margin-left': initialState
+					});
+					self.marquee.redraw();
+					self._run( initialState, endState, iterationCount );
+				});
+
+			} else {
+
+				this.marquee.animate({
+					'margin-left': endState
+				},
+				{
+					duration: this.options.duration,
+					easing: 'linear',
+					complete: function () {
+						self.marquee.css( 'margin-left', initialState );
+						iterationCount = iterationCount === "infinite" ? "infinite" : iterationCount - 1;
+						self._run( initialState, endState, iterationCount );
+					}
+				});
+
+			}
 		}
 	};
 
-	ModernMarquee.prototype._oldRun = function _oldRun( initialState, endState ) {
-		var self = this;
-		this.marquee.animate({
-			'margin-left': endState
-		},
-		{
-			duration: 4000,
-			easing: 'linear',
-			complete: function () {
-				self.marquee.css( 'margin-left', initialState );
-				self._oldRun( initialState, endState );
-			}
-		});
-	};
-
-	ModernMarquee.prototype._run = function _run( initialState, endState ) {
-		var self = this;
-		this.marquee.css({
-			'transition-property'        : 'margin-left',
-			'transition-duration'        : this.options.duration,
-			'transition-timing-function' : 'linear',
-			'margin-left'                : endState
-		})
-		.one( transEndEventName, function ( event ) {
-			self.marquee.css({
-				'transition-property'        : '',
-				'transition-duration'        : '',
-				'transition-timing-function' : ''
-			});
-			self.marquee.css({
-				'margin-left': initialState
-			});
-			self.marquee.redraw();
-			self._run( initialState, endState );
-		});
-	};
-
+	/*
+	 * @function _calculateEndState
+	 * Calculates the end state for a given marquee, based on the specified mode
+	 *
+	 * @param container jQuery object
+	 * @param marquee jQuery object
+	 *
+	 * @returns integer
+	 */
 	ModernMarquee.prototype._calculateEndState = function _calculateEndState( container, marquee ) {
 		switch ( this.options.mode ) {
 			case 'scroll':
@@ -118,6 +153,12 @@
 		}
 	};
 
+	/*
+	 * @function modernMarquee
+	 * jQuery plugin wrapper around ModernMarquee
+	 *
+	 * @param options object
+	 */
 	$.fn.modernMarquee = function ( options ) {
 		return this.each( function () {
 			if (!$.data( this, "plugin_modernMarquee" ) ) {
