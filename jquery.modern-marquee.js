@@ -56,30 +56,12 @@
 	 * Wraps the element, starts the animation
 	 */
 	ModernMarquee.prototype.init = function init() {
-		var initialState,
-			endState,
-			iterationCount;
-
-		this.el.addClass( 'mm-marquee-container' );
-		this.marquee = this.el.contents().wrap( '<span class="mm-marquee">' ).parent();
-
-		this.el.css({
+		this.el.addClass( 'mm-marquee-container' ).css({
 			'overflow':    'hidden',
 			'white-space': 'nowrap'
 		});
 
-		initialState = '100%';
-		endState = this._calculateEndState( this.el, this.marquee );
-
-		iterationCount = this.options.iterationCount;
-
-		if ( this.options.mode === 'scroll' ) {
-			this.marquee.css( 'margin-left', initialState );
-		}
-
-		if ( this.options.start === 'auto' ) {
-			this._run( initialState, endState, iterationCount );
-		}
+		this._refresh();
 
 		this._bindEventHandlers();
 	};
@@ -143,7 +125,43 @@
 	 * Wraps the element, calculates the end state
 	 */
 	ModernMarquee.prototype._refresh = function _refresh( event ) {
-		console.log('refreshing');
+		var initialState = "100%",
+			endState,
+			iterationCount;
+
+		if ( this.marquee ) {
+			this._stop();
+		}
+
+		this.marquee = this.el.contents().wrap( '<span class="mm-marquee">' ).parent();
+
+		endState = this._calculateEndState( this.el, this.marquee );
+
+		iterationCount = this.options.iterationCount;
+
+		if ( this.options.mode === 'scroll' ) {
+			this.marquee.css( 'margin-left', initialState );
+		}
+
+		if ( this.options.start === 'auto' ) {
+			this._run( initialState, endState, iterationCount );
+		}
+	};
+
+	/*
+	 * @function _stop
+	 * Stops the animation
+	 */
+	ModernMarquee.prototype._stop = function _stop() {
+		if ( supportsTransitions ) {
+			return this.marquee.css({
+				'transition-property'        : '',
+				'transition-duration'        : '',
+				'transition-timing-function' : '',
+				'margin-left'                : this.marquee.css('margin-left')
+			});
+		}
+		return this.marquee.stop( true, true );
 	};
 
 	/*
