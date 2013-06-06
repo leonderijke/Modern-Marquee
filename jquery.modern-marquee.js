@@ -2,6 +2,7 @@
  * jQuery Modern Marquee plugin
  * https://github.com/leonderijke/Modern-Marquee
  *
+ * Version: 0.1.0
  * Author: @leonderijke
  * Licensed under the MIT license
  */
