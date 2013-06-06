@@ -141,11 +141,16 @@
 
 		iterationCount = this.options.iterationCount;
 
-		if ( this.options.mode === 'scroll' ) {
+
+		if ( this.options.start === 'auto' ) {
+			start = this.marquee.outerWidth() > this.el.width();
+		}
+
+		if ( start && this.options.mode === 'scroll' ) {
 			this.marquee.css( 'margin-left', initialState );
 		}
 
-		if ( start || this.options.start === 'auto' ) {
+		if ( start ) {
 			this._run( initialState, endState, iterationCount );
 		}
 	};
