@@ -125,7 +125,7 @@
 	 * Wraps the element, calculates the end state
 	 */
 	ModernMarquee.prototype._refresh = function _refresh( event, start ) {
-		var initialState = "100%",
+		var initialState,
 			endState,
 			iterationCount;
 
@@ -135,6 +135,7 @@
 
 		this.marquee = this.el.contents().wrap( '<span class="mm-marquee">' ).parent();
 
+		initialState = ( this.options.mode === 'scroll' ) ? '100%' : 0;
 		endState = this._calculateEndState( this.el, this.marquee );
 
 		iterationCount = this.options.iterationCount;

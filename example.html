@@ -27,6 +27,7 @@
 		<button class="js-btn-start">Start</button>
 		<button class="js-btn-stop">Stop</button>
 
+		<h1 class="js-marquee-slide">This is some example text. Look I'm scrolling!</h1>
 
 		<script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
 		<script src="jquery.modern-marquee.js"></script>
@@ -48,6 +49,10 @@
 				});
 				$('.js-btn-stop').on( 'click', function() {
 					$('.js-marquee-manual').trigger('modernMarquee.stop');
+				});
+
+				$('.js-marquee-slide').modernMarquee({
+					mode: 'slide'
 				});
 			});
 		</script>
