@@ -124,7 +124,7 @@
 	 * @function _refresh
 	 * Wraps the element, calculates the end state
 	 */
-	ModernMarquee.prototype._refresh = function _refresh( event ) {
+	ModernMarquee.prototype._refresh = function _refresh( event, start ) {
 		var initialState = "100%",
 			endState,
 			iterationCount;
@@ -143,9 +143,17 @@
 			this.marquee.css( 'margin-left', initialState );
 		}
 
-		if ( this.options.start === 'auto' ) {
+		if ( start || this.options.start === 'auto' ) {
 			this._run( initialState, endState, iterationCount );
 		}
+	};
+
+	/*
+	 * @function _start
+	 * Starts the animation
+	 */
+	ModernMarquee.prototype._start = function _start( event ) {
+		this._refresh( event, true );
 	};
 
 	/*
@@ -188,11 +196,9 @@
 	 * Binds the event handlers to the element
 	 */
 	ModernMarquee.prototype._bindEventHandlers = function _bindEventHandlers() {
+		this.el.on( 'modernMarquee.start', $.proxy( this._start, this ) );
+		this.el.on( 'modernMarquee.stop', $.proxy( this._stop, this ) );
 		this.el.on( 'modernMarquee.refresh', $.proxy( this._refresh, this ) );
-
-		if ( this.options.start === 'hover' ) {
-			this.el.on( 'hover', $.proxy( this._run, this ));
-		}
 	};
 
 	/*

@@ -23,6 +23,11 @@
 		<h1 class="js-marquee-infinite js-marquee-refresh">This is my initial text. Click the button to change my text.</h1>
 		<button class="js-btn-refresh">Change text</button>
 
+		<h1 class="js-marquee-manual">I will only scroll when you start me.</h1>
+		<button class="js-btn-start">Start</button>
+		<button class="js-btn-stop">Stop</button>
+
+
 		<script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
 		<script src="jquery.modern-marquee.js"></script>
 		<script>
@@ -33,6 +38,16 @@
 				});
 				$('.js-btn-refresh').on( 'click', function() {
 					$('.js-marquee-refresh').text('This is my new text').trigger('modernMarquee.refresh');
+				});
+
+				$('.js-marquee-manual').modernMarquee({
+					start: 'manual'
+				});
+				$('.js-btn-start').on( 'click', function() {
+					$('.js-marquee-manual').trigger('modernMarquee.start');
+				});
+				$('.js-btn-stop').on( 'click', function() {
+					$('.js-marquee-manual').trigger('modernMarquee.stop');
 				});
 			});
 		</script>
